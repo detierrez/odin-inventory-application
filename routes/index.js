@@ -4,7 +4,6 @@ const controller = require("../controllers/index");
 const router = Router();
 
 router.get("/", controller.getIndex);
-router.post("/", controller.postIndex);
-router.get("/:id", controller.getIndex);
+router.get("/categories", controller.getIndex);
 
 module.exports = router;

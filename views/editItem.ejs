@@ -1,0 +1,18 @@
+<form action="/items/<%= item.id %>">
+    <p><%= item.name %></p>
+    <p><%= item.brand %></p>
+    <p><%= item.description %></p>
+    <p><%= item.sku %></p>
+    <p><%= item.qty %></p>
+    <p><%= item.price %></p>
+    
+    <% if (locals.categories) { %>
+    <p>Categories:</p>
+    <ul>
+      <% categories.forEach(category => { %>
+      <li><%- include('./components/categoryLink', {category}) %></li>
+      <% }) %>
+    </ul>
+    <% } %>
+    
+</form>

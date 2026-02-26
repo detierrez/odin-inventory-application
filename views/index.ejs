@@ -1,5 +1,53 @@
 <h1>Inventory page :]</h1>
 
-<a href="/employees">Employees</a>
-<a href="/departments">Departments</a>
-<a href="/projects">Projects</a>
+<aside>
+  <a href="/">All items</a>
+
+  <% if (locals.categories) { %>
+  Categories:
+  <ul>
+    <% categories.forEach(category => { %>
+    <li><%- include('./components/categoryLink', {category}) %></li>
+    <% }) %>
+  </ul>
+  <% } else { %>
+  <p>No categories yet</p>
+  <% } %>
+</aside>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>SKU</th>
+    <th>Stock</th>
+    <th>Price</th>
+    <th>Name</th>
+    <th>Brand</th>
+    <th>Description</th>
+    <th>Categories</th>
+  </tr>
+  <% if (locals.items) { %>
+  <% items.forEach(item => { %>
+  <tr>
+    <td><a href="/items/<%= item.id %>"><%= item.id %></a></td>
+    <td><%= item.sku %></td>
+    <td><%= item.stock %></td>
+    <td><%= item.price %></td>
+    <td><%= item.name %></td>
+    <td><%= item.brand %></td>
+    <td><%= item.description %></td>
+    <td>
+      <% const categories = item.categories %>
+      <% if (categories) { %>
+      <% const lastIdx = categories.length - 1 %>
+      <% categories.forEach((category, idx) => { %>
+      <% const trail = idx !== lastIdx ? ',' : '' %>
+      <%- include('./components/categoryLink', {category}) %><%= trail %>
+      <% }) %>
+      <% } %>
+    </td>
+  </tr>
+  <% }) %>
+  <% } else { %>
+  <td colspan="8" style="text-align: center;">No items found</td>
+  <% } %>
+</table>
