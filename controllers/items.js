@@ -7,19 +7,7 @@ const {
 
 module.exports.getItems = async (req, res, next) => {
   const items = await db.getAllItems();
-  res.render("boilerplate", { view: "items", items });
-};
-
-module.exports.postItem = async (req, res, next) => {
-  const { sku, stock, price, name, brand, description } = {
-    sku: "12345678",
-    stock: 12,
-    price: 23,
-    name: "LOL",
-    brand: "LMAOO",
-    description: "ROLF",
-  };
-  await db.createItem(sku, stock, price, name, brand, description);
+  res.render("boilerplate", { view: "index", items });
 };
 
 module.exports.getItem = [
@@ -30,16 +18,33 @@ module.exports.getItem = [
 ];
 
 module.exports.getNewItem = [
-  makeItemForTemplate,
   fetchAllCategories,
+  makeItemForTemplate,
+  renderItemForm,
+];
+
+module.exports.postItem = [
+  validateItemArguments,
+  attachValidated,
+  async (req, res, next) => {
+    if (res.locals.hasErrors) return next();
+
+    const { sku, stock, price, name, brand, description } =
+      res.locals.validated;
+    await db.createItem(sku, stock, price, name, brand, description);
+    res.redirect("/");
+  },
+  fetchAllCategories,
+  makeItemForTemplate,
   renderItemForm,
 ];
 
 module.exports.getEditItem = [
   validateItemId,
   attachValidated,
-  makeItemForTemplate,
+  fetchItemWithCategoriesIds,
   fetchAllCategories,
+  makeItemForTemplate,
   renderItemForm,
 ];
 
@@ -57,8 +62,8 @@ module.exports.updateItem = [
     await db.updateItemCategories(id, categoriesIds);
     res.redirect(`/items/${res.locals.validated.id}`);
   },
-  makeItemForTemplate,
   fetchAllCategories,
+  makeItemForTemplate,
   renderItemForm,
 ];
 
@@ -95,11 +100,23 @@ async function fetchItemWithCategoriesIds(req, res, next) {
 }
 
 async function makeItemForTemplate(req, res, next) {
+  if (res.locals.item) next();
   const { id } = req.params;
-  const { sku, stock, price, name, brand, description } = req.body;
+  let { sku, stock, price, name, brand, description, categoriesIds } =
+    req.body || {};
+  price = isNaN(price) ? "" : price;
+  categoriesIds = categoriesIds ? categoriesIds : [];
 
-  res.locals.item = { id, sku, stock, price, name, brand, description };
-  res.locals.item.categoriesIds = res.locals.validated.categoriesIds;
+  res.locals.item = {
+    id,
+    sku,
+    stock,
+    price,
+    name,
+    brand,
+    description,
+    categoriesIds,
+  };
   next();
 }
 

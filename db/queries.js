@@ -11,14 +11,15 @@ module.exports.getAllItems = async () => {
   return rows;
 };
 
-module.exports.createItem = async (
+module.exports.createItem = async ({
   sku,
   stock,
   price,
   name,
   brand,
   description,
-) => {
+}) => {
+  console.log({ sku, stock, price, name, brand, description });
   await pool.query(
     `
     INSERT INTO items

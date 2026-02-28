@@ -1,27 +1,30 @@
-<form method="POST" action="/items/<%= item.id %>" enctype="application/x-www-form-urlencoded">
-  <input type="hidden" name="_method" value="PATCH">
+<% 
+let { id, name, brand, description, sku, stock, price, categoriesIds } = item; 
+const method = id ? 'PATCH' : 'POST';
+%>
+<form method="POST" action="/items/<%= id %>" enctype="application/x-www-form-urlencoded">
+  <input type="hidden" name="_method" value=<%= method %>>
   <br />
   <label for="name">Name:</label>
-  <input type="text" id="name" name="name" value="<%= item.name %>"></input>
+  <input type="text" id="name" name="name" value="<%= name %>"></input>
   <br />
   <label for="brand">Brand:</label>
-  <input type="text" id="brand" name="brand" value="<%= item.brand %>"></input>
+  <input type="text" id="brand" name="brand" value="<%= brand %>"></input>
   <br />
   <label for="description">Description:</label>
-  <input type="text" id="description" name="description" value="<%= item.description %>"></input>
+  <input type="text" id="description" name="description" value="<%= description %>"></input>
   <br />
   <label for="sku">Sku:</label>
-  <input type="text" id="sku" name="sku" value="<%= item.sku %>"></input>
+  <input type="text" id="sku" name="sku" value="<%= sku %>"></input>
   <br />
   <label for="stock">Stock:</label>
-  <input type="text" id="stock" name="stock" value="<%= item.stock %>"></input>
+  <input type="text" id="stock" name="stock" value="<%= stock %>"></input>
   <br />
   <label for="price">Price:</label>
-  <input type="text" id="price" name="price" value="<%= item.price %>"></input>
+  <input type="text" id="price" name="price" value="<%= price %>"></input>
 
   <fieldset>
     <legend>Categories:</legend>
-    <% const { categoriesIds } = item %>
     <% if ( allCategories.length > 0 ) { %>
     <% allCategories.forEach(({id, name}) => { %>
     <div>

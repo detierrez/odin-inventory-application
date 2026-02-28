@@ -4,6 +4,7 @@ const methodOverride = require("method-override");
 
 const itemsRouter = require("./routes/items");
 const indexRouter = require("./routes/index");
+const sdbxRouter = require("./sdbx");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(
   }),
 );
 
+// app.use("/sdbx", sdbxRouter);
 app.use("/", indexRouter);
 app.use("/items", itemsRouter);
 // app.use("/", (err, req, res, next) => res.render("404"));

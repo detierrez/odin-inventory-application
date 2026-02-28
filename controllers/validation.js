@@ -28,6 +28,8 @@ module.exports.validateItemArguments = [
     .isInt({ min: 0 })
     .withMessage("Stock must be a positive integer"),
   body("price")
+    .exists({ values: "falsy" })
+    .withMessage("Price is obligatory")
     .toFloat()
     .isFloat({ min: 0 })
     .withMessage("Price must be a positive number")
@@ -60,10 +62,12 @@ module.exports.validateItemArguments = [
       return array.every(Number.isInteger);
     })
     .withMessage("Categories must be an array of strings"),
+  logBody,
   attachErrors,
 ];
 
 function logBody(req, res, next) {
+  console.log(req.body);
   next();
 }
 
