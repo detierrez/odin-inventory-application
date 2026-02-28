@@ -2,9 +2,9 @@ require("./utils/loadEnv");
 const express = require("express");
 const methodOverride = require("method-override");
 
-const itemsRouter = require("./routes/items");
 const indexRouter = require("./routes/index");
-const sdbxRouter = require("./sdbx");
+const categoriesRouter = require("./routes/categories");
+const itemsRouter = require("./routes/items");
 
 const app = express();
 
@@ -19,8 +19,8 @@ app.use(
   }),
 );
 
-// app.use("/sdbx", sdbxRouter);
 app.use("/", indexRouter);
+app.use("/categories", categoriesRouter);
 app.use("/items", itemsRouter);
 // app.use("/", (err, req, res, next) => res.render("404"));
 

@@ -7,8 +7,26 @@
   Categories:
   <ul>
     <% categories.forEach(category => { %>
-    <li><%- include('./components/categoryLink', {category}) %></li>
+    <li>
+      <%- include('./components/categoryLink', {category}) %>
+      <form method="POST" action="/categories/<%= category.id %>" enctype="application/x-www-form-urlencoded" style="display: inline;">
+        <input type="hidden" name="_method" value='PATCH'>
+        <input type="text" name="name" value=<%= category.name %>>
+        <button>✓</button>
+      </form>
+      <form method="POST" action="/categories/<%= category.id %>" enctype="application/x-www-form-urlencoded" style="display: inline;">
+        <input type="hidden" name="_method" value='DELETE'>
+        <input type="hidden" name="id" value=<%= category.id %>>
+        <button>×</button>
+      </form>
+    </li>
     <% }) %>
+    <li>
+      <form method="POST" action="/categories/" style="display: inline;">
+        <input type="text" name="name" value="">
+        <button>✓</button>
+      </form>
+    </li>
   </ul>
   <% } else { %>
   <p>No categories yet</p>

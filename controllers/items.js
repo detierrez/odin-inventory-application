@@ -3,7 +3,7 @@ const {
   validateItemId,
   validateItemArguments,
   attachValidated,
-} = require("./validation");
+} = require("./validation/items");
 
 module.exports.getItems = async (req, res, next) => {
   const items = await db.getAllItems();

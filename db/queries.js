@@ -1,11 +1,59 @@
 const format = require("pg-format");
 const pool = require("./pool");
 
+module.exports.getAllCategories = async () => {
+  const { rows } = await pool.query(
+    `
+    SELECT *
+    FROM categories
+    ORDER BY name
+    `,
+  );
+  return rows;
+};
+
+module.exports.createCategory = async (name) => {
+  await pool.query(
+    `
+    INSERT INTO categories
+      (name)
+    VALUES
+      ($1)
+    `,
+    [name],
+  );
+};
+
+module.exports.updateCategory = async (id, name) => {
+  await pool.query(
+    `
+    UPDATE categories
+    SET
+      name=$2
+    WHERE 
+      id=$1;
+    `,
+    [id, name],
+  );
+};
+
+module.exports.deleteCategory = async (id) => {
+  await pool.query(
+    `
+    DELETE FROM categories
+    WHERE 
+      id=$1;
+    `,
+    [id],
+  );
+};
+
 module.exports.getAllItems = async () => {
   const { rows } = await pool.query(
     `
     SELECT * 
-    FROM items;
+    FROM items
+    ORDER BY id
     `,
   );
   return rows;
@@ -56,13 +104,14 @@ module.exports.updateItem = async ({
     `
     UPDATE items
     SET
-    sku=$2,
-    stock=$3,
-    price=$4,
-    name=$5,
-    brand=$6,
-    description=$7
-    WHERE items.id=$1;
+      sku=$2,
+      stock=$3,
+      price=$4,
+      name=$5,
+      brand=$6,
+      description=$7
+    WHERE 
+      items.id=$1;
     `,
     [id, sku, stock, price, name, brand, description],
   );
@@ -84,19 +133,10 @@ module.exports.getItemsByCategory = async (id) => {
     SELECT *
     FROM items, assignments
     WHERE items.id = item_id
-      AND category_id=$1;
+      AND category_id=$1
+    ORDER BY id
     `,
     [id],
-  );
-  return rows;
-};
-
-module.exports.getAllCategories = async () => {
-  const { rows } = await pool.query(
-    `
-    SELECT *
-    FROM categories
-    `,
   );
   return rows;
 };
@@ -150,10 +190,3 @@ module.exports.updateItemCategories = async (itemId, categoriesIds) => {
     );
   }
 };
-
-`
-    INSERT INTO items
-      (sku, stock, price, name, brand, description)
-    VALUES
-      ('ASD', 12, 'asd', 'aaa', 'bbb', 'ccc');
-    `;

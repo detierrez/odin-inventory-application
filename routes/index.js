@@ -4,6 +4,5 @@ const controller = require("../controllers/index");
 const router = Router();
 
 router.get("/", controller.getIndex);
-router.get("/categories", controller.getIndex);
 
 module.exports = router;

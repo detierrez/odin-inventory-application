@@ -1,6 +1,6 @@
 const { matchedData } = require("express-validator");
 const db = require("../db/queries");
-const { validateCategoryId } = require("./validation");
+const { validateCategoryId } = require("./validation/items");
 
 module.exports.getIndex = [
   validateCategoryId,
