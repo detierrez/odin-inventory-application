@@ -1,10 +1,9 @@
-const { query, matchedData } = require("express-validator");
+const { matchedData } = require("express-validator");
 const db = require("../db/queries");
-const { validateResult } = require("./validation");
+const { validateCategoryId } = require("./validation");
 
 module.exports.getIndex = [
-  query("catId").optional().isInt().withMessage("id must be an integer"),
-  validateResult,
+  validateCategoryId,
   async (req, res, next) => {
     res.locals.categories = await db.getAllCategories();
     next();

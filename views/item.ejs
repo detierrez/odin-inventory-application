@@ -2,14 +2,23 @@
 <p><%= item.brand %></p>
 <p><%= item.description %></p>
 <p><%= item.sku %></p>
-<p><%= item.qty %></p>
+<p><%= item.stock %></p>
 <p><%= item.price %></p>
 
-<% if (locals.categories) { %>
+<% const categories = locals.item.categories %>
+<% if (categories.length > 0) { %>
 <p>Categories:</p>
 <ul>
   <% categories.forEach(category => { %>
   <li><%- include('./components/categoryLink', {category}) %></li>
   <% }) %>
 </ul>
+<% } else { %>
+<p>This item has no categories</p>
 <% } %>
+
+<a href="/items/<%= item.id %>/edit">Edit</a>
+<form method="POST" action="/items/<%= item.id %>" enctype="application/x-www-form-urlencoded">
+  <input type="hidden" name="_method" value="DELETE">
+  <button type="submit">Delete item</button>
+</form>
