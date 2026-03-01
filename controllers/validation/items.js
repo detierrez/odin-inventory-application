@@ -1,10 +1,5 @@
-const {
-  param,
-  query,
-  body,
-  validationResult,
-  matchedData,
-} = require("express-validator");
+const { param, query, body } = require("express-validator");
+const { attachErrors, raiseErrors } = require("./common");
 
 module.exports.validateCategoryId = [
   query("catId").optional().isInt().withMessage("id must be an integer"),
@@ -17,7 +12,6 @@ module.exports.validateItemId = [
 ];
 
 module.exports.validateItemArguments = [
-  logBody,
   body("sku")
     .trim()
     .matches(/^[A-Z0-9]+$/)
@@ -62,35 +56,5 @@ module.exports.validateItemArguments = [
       return array.every(Number.isInteger);
     })
     .withMessage("Categories must be an array of strings"),
-  logBody,
   attachErrors,
 ];
-
-function logBody(req, res, next) {
-  console.log(req.body);
-  next();
-}
-
-function raiseErrors(req, res, next) {
-  const errors = validationResult(req);
-  if (errors.isEmpty()) return next();
-  const msgs = errors
-    .array()
-    .reduce(
-      (msg, error, idx) => `${msg}${idx > 0 ? "\n" : ""}${error.msg}`,
-      "",
-    );
-  next(new Error(msgs));
-}
-
-module.exports.attachValidated = (req, res, next) => {
-  res.locals.validated = matchedData(req);
-  next();
-};
-
-function attachErrors(req, res, next) {
-  const errors = validationResult(req);
-  res.locals.hasErrors = !errors.isEmpty();
-  res.locals.errors = errors.array();
-  next();
-}

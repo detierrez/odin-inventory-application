@@ -1,21 +1,12 @@
 const db = require("../db/queries");
-const {
-  validateItemId,
-  validateItemArguments,
-  attachValidated,
-} = require("./validation/items");
+const { validateItemId, validateItemArguments } = require("./validation/items");
 
 module.exports.getItems = async (req, res, next) => {
   const items = await db.getAllItems();
   res.render("boilerplate", { view: "index", items });
 };
 
-module.exports.getItem = [
-  validateItemId,
-  attachValidated,
-  fetchItemWithCategories,
-  renderItem,
-];
+module.exports.getItem = [validateItemId, fetchItemWithCategories, renderItem];
 
 module.exports.getNewItem = [
   fetchAllCategories,
@@ -25,12 +16,10 @@ module.exports.getNewItem = [
 
 module.exports.postItem = [
   validateItemArguments,
-  attachValidated,
   async (req, res, next) => {
     if (res.locals.hasErrors) return next();
 
-    const { sku, stock, price, name, brand, description } =
-      res.locals.validated;
+    const { sku, stock, price, name, brand, description } = req.body;
     await db.createItem(sku, stock, price, name, brand, description);
     res.redirect("/");
   },
@@ -41,7 +30,6 @@ module.exports.postItem = [
 
 module.exports.getEditItem = [
   validateItemId,
-  attachValidated,
   fetchItemWithCategoriesIds,
   fetchAllCategories,
   makeItemForTemplate,
@@ -51,16 +39,16 @@ module.exports.getEditItem = [
 module.exports.updateItem = [
   validateItemId,
   validateItemArguments,
-  attachValidated,
   async (req, res, next) => {
     if (res.locals.hasErrors) return next();
 
-    const { id, sku, stock, price, name, brand, description, categoriesIds } =
-      res.locals.validated;
+    const { id } = req.params;
+    const { sku, stock, price, name, brand, description, categoriesIds } =
+      req.body;
 
     await db.updateItem({ id, sku, stock, price, name, brand, description });
     await db.updateItemCategories(id, categoriesIds);
-    res.redirect(`/items/${res.locals.validated.id}`);
+    res.redirect(`/items/${id}`);
   },
   fetchAllCategories,
   makeItemForTemplate,
@@ -69,16 +57,15 @@ module.exports.updateItem = [
 
 module.exports.deleteItem = [
   validateItemId,
-  attachValidated,
   async (req, res, next) => {
-    const { id } = res.locals.validated;
+    const { id } = req.params;
     await db.deleteItem(id);
     res.redirect("/");
   },
 ];
 
 async function fetchItemWithCategories(req, res, next) {
-  const { id } = res.locals.validated;
+  const { id } = req.params;
   const [item, categories] = await Promise.all([
     db.getItem(id),
     db.getCategoriesByItem(id),
@@ -89,7 +76,7 @@ async function fetchItemWithCategories(req, res, next) {
 }
 
 async function fetchItemWithCategoriesIds(req, res, next) {
-  const { id } = res.locals.validated;
+  const { id } = req.params;
   const [item, categoriesIds] = await Promise.all([
     db.getItem(id),
     db.getCategoriesIdsByItem(id),
